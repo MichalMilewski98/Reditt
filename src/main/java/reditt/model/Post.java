@@ -24,6 +24,10 @@ public class Post {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "subreddit_id")
+    private Subreddit subreddit;
+
     @OneToMany
     @JoinColumn(name = "post")
     private Set<Comment> comments;
