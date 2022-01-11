@@ -35,3 +35,4 @@ build/
 ### Settings Files ##
 *.properties
 *.jks
+node_modules

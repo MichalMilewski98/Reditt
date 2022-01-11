@@ -9,7 +9,8 @@ import reditt.dto.LoginRequest;
 import reditt.dto.RegisterRequest;
 import reditt.service.AuthService;
 
-@RestController("/auth")
+@RestController
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;

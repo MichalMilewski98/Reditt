@@ -3,6 +3,7 @@ package reditt.service;
 import reditt.dto.AuthenticationResponse;
 import reditt.dto.LoginRequest;
 import reditt.dto.RegisterRequest;
+import reditt.exception.RedittException;
 
 public interface AuthService {
 
@@ -10,5 +11,5 @@ public interface AuthService {
 
     void verifyAccount(String token);
 
-    AuthenticationResponse login(LoginRequest loginRequest);
+    AuthenticationResponse login(LoginRequest loginRequest) throws RedittException;
 }
