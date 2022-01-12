@@ -1,4 +1,4 @@
 package reditt.query.service;
 
-public interface PostQueryService {
+public interface PostQueryService  {
 }

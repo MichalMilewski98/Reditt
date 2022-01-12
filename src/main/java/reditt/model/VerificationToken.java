@@ -1,9 +1,6 @@
 package reditt.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class VerificationToken {
@@ -14,6 +11,8 @@ public class VerificationToken {
 
     private String token;
 
+    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
     public VerificationToken() { }

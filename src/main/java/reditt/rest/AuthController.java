@@ -21,20 +21,20 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
-        authService.signup(registerRequest);
+        this.authService.signup(registerRequest);
 
         return new ResponseEntity<>("Succesfully registered", HttpStatus.CREATED);
     }
 
-    @GetMapping("/verify")
+    @GetMapping("/accountVerification/{token}")
     public ResponseEntity<String> verifyAccount(@PathVariable String token) {
-        authService.verifyAccount(token);
+        this.authService.verifyAccount(token);
 
         return new ResponseEntity<>("Sucessfully verified", HttpStatus.OK);
     }
 
     @PostMapping("/login")
     public AuthenticationResponse login(@RequestBody LoginRequest loginRequest){
-        return authService.login(loginRequest);
+        return this.authService.login(loginRequest);
     }
 }

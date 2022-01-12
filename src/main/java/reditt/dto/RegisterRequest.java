@@ -1,9 +1,14 @@
 package reditt.dto;
 
+import reditt.validator.annotation.ValidEmail;
+
 public class RegisterRequest {
 
+    @ValidEmail
     private String email;
+
     private String username;
+
     private String password;
 
     public String getEmail() {

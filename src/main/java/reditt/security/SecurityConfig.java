@@ -17,8 +17,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
 
+    @Autowired
     public SecurityConfig(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return super.userDetailsService();
     }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
@@ -38,10 +44,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) {
-        authenticationManagerBuilder.userDetailsService()
-                .passwordEncoder()
+    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
     }
+
 
     @Bean
     PasswordEncoder passwordEncoder() {
