@@ -3,15 +3,18 @@ package reditt.query.base;
 import com.querydsl.core.FetchableQuery;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import javassist.NotFoundException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-public abstract class AbstractQueryService <T extends EntityPathBase<T>> {
+public abstract class AbstractQueryService <T extends EntityPathBase<?>> {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -32,6 +35,18 @@ public abstract class AbstractQueryService <T extends EntityPathBase<T>> {
 
     protected boolean notExists(FetchableQuery<?, ?> query) {
         return !this.exists(query);
+    }
+
+    protected <T2> T2 fetchOne(JPQLQuery<T2> query) throws NotFoundException {
+        List<T2> results = query.fetch();
+        if (results.isEmpty()) {
+            throw new NotFoundException("No results found");
+        }
+
+        if (results.size() < 1) {
+            throw  new IllegalStateException("Multiple results found");
+        }
+        return results.get(0);
     }
 
 }

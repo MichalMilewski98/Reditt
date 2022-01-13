@@ -3,14 +3,15 @@ package reditt.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reditt.dto.LoginRequest;
 import reditt.dto.RegisterRequest;
 import reditt.exception.RedittException;
 import reditt.model.User;
@@ -19,45 +20,27 @@ import reditt.repository.UserRepository;
 import reditt.repository.VerificationTokenRepository;
 import reditt.service.AuthService;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
-public class AuthServiceImpl implements AuthService, UserDetailsService {
+public class AuthServiceImpl implements AuthService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
-    //private final AuthenticationManager authenticationManager;
     private final JavaMailSender javaMailSender;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
     public AuthServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository,
-        VerificationTokenRepository verificationTokenRepository,
-        AuthenticationManager authenticationManager, JavaMailSender javaMailSender) {
+        VerificationTokenRepository verificationTokenRepository, JavaMailSender javaMailSender,
+        AuthenticationManager authenticationManager) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.verificationTokenRepository = verificationTokenRepository;
-       // this.authenticationManager = authenticationManager;
         this.javaMailSender = javaMailSender;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = this.userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        } else {
-
-        }
-        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        user.getRoles().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
-        });
-
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+        this.authenticationManager = authenticationManager;
     }
 
     @Transactional
@@ -97,16 +80,21 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         this.fetchAndActivateUser(verificationToken.get());
     }
 
-    /*public AuthenticationResponse login(LoginRequest loginRequest) throws RedittException {
-        Authentication authenticate = this.authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
-        loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authenticate);
+    public Authentication login(LoginRequest loginRequest) throws RedittException {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        boolean isAuthenticated = this.isAuthenticated(authentication);
+        if (isAuthenticated) {
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
 
-        return new AuthenticationResponse(token, loginRequest.getUsername());
+        return authentication;
     }
 
-     */
+    private boolean isAuthenticated(Authentication authentication) {
+        return authentication != null && !(authentication instanceof AnonymousAuthenticationToken)
+                && authentication.isAuthenticated();
+    }
 
     @Transactional
     private void fetchAndActivateUser(VerificationToken verificationToken) {

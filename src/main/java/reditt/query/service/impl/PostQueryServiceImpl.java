@@ -1,14 +1,17 @@
 package reditt.query.service.impl;
 
 import reditt.model.QPost;
+import reditt.query.base.AbstractQueryService;
 import reditt.query.service.PostQueryService;
 
-public class PostQueryServiceImpl implements PostQueryService {
+public class PostQueryServiceImpl extends AbstractQueryService<QPost> implements PostQueryService {
 
-    private final QPost POST = QPost.post;
+    private static final QPost POST = QPost.post;
 
-    public PostQueryServiceImpl() {
-
+    protected PostQueryServiceImpl() {
+        super(POST);
     }
+
+
 
 }
