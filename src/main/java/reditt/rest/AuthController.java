@@ -4,8 +4,6 @@ package reditt.rest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reditt.dto.AuthenticationResponse;
-import reditt.dto.LoginRequest;
 import reditt.dto.RegisterRequest;
 import reditt.service.AuthService;
 
@@ -33,8 +31,10 @@ public class AuthController {
         return new ResponseEntity<>("Sucessfully verified", HttpStatus.OK);
     }
 
-    @PostMapping("/login")
+   /* @PostMapping("/login")
     public AuthenticationResponse login(@RequestBody LoginRequest loginRequest){
         return this.authService.login(loginRequest);
     }
+
+    */
 }
