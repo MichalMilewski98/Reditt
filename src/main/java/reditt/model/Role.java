@@ -1,8 +1,8 @@
 package reditt.model;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Role {
@@ -14,7 +14,7 @@ public class Role {
     private String name;
 
     @ManyToMany
-    private Set<User> users = new HashSet<>();
+    private List<User> users = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -24,11 +24,11 @@ public class Role {
         this.name = name;
     }
 
-    public Set<User> getUsers() {
+    public List<User> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<User> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 }

@@ -1,8 +1,6 @@
 package reditt.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,18 +27,18 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
-    private final JavaMailSender javaMailSender;
     private final AuthenticationManager authenticationManager;
+    private final MailServiceImpl mailService;
 
     @Autowired
     public AuthServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository,
-        VerificationTokenRepository verificationTokenRepository, JavaMailSender javaMailSender,
-        AuthenticationManager authenticationManager) {
+        VerificationTokenRepository verificationTokenRepository, AuthenticationManager authenticationManager,
+        MailServiceImpl mailService) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.verificationTokenRepository = verificationTokenRepository;
-        this.javaMailSender = javaMailSender;
         this.authenticationManager = authenticationManager;
+        this.mailService = mailService;
     }
 
     @Transactional
@@ -52,15 +50,8 @@ public class AuthServiceImpl implements AuthService {
         user.setActive(false);
         this.userRepository.save(user);
         String token = this.generateVerificationToken(user);
-
-        SimpleMailMessage emailMessage = new SimpleMailMessage();
-        emailMessage.setFrom("reditt@email.com");
-        emailMessage.setTo(registerRequest.getEmail());
-        emailMessage.setSubject("Reditt registration confirmation");
-        emailMessage.setText("http://localhost:8080/api/auth/accountVerifivation" + token);
-
-        this.javaMailSender.send(emailMessage);
-
+        String recipient = registerRequest.getEmail();
+        this.mailService.sendMail(token, recipient);
     }
 
     private String generateVerificationToken(User user) {
