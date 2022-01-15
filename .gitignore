@@ -34,5 +34,5 @@ build/
 
 ### Settings Files ##
 *.properties
-*.jks
 node_modules
+log4j2.xml
