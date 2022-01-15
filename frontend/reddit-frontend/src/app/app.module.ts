@@ -1,21 +1,31 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
 
 import { AppComponent } from './app.component';
-import { ProductListComponent } from './components/product-list/product-list.component';
-import { ProductService } from './service/product.service';
-
+import { SignupComponent } from './auth/signup/signup.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HeaderComponent } from './components/header/header.component';
+import { LoginComponent } from './auth/login/login.component';
+import { PostComponent } from './components/post/post.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
-    ProductListComponent
+    HeaderComponent,
+    LoginComponent,
+    PostComponent,
+    SignupComponent
   ],
   imports: [
+    AppRoutingModule,
     BrowserModule,
-    HttpClientModule
+    FormsModule,
+    HttpClientModule,
+    ReactiveFormsModule
   ],
-  providers: [ProductService],
+  providers: [
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
