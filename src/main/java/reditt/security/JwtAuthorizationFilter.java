@@ -14,7 +14,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static java.util.Arrays.stream;
@@ -23,10 +25,13 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
+    private static final List<String> filterPaths = Arrays.asList(
+            "/api/auth/login", "/api/auth/token/refresh/**");
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        if (request.getServletPath().equals("/api/login")) {
+        if (filterPaths.contains(request.getServletPath())) {
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);

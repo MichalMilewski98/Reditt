@@ -9,6 +9,8 @@ import { HeaderComponent } from './components/header/header.component';
 import { LoginComponent } from './auth/login/login.component';
 import { PostComponent } from './components/post/post.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxWebstorageModule } from 'ngx-webstorage';
+import { ToastrModule } from 'ngx-toastr';
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,7 +24,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule
+    NgxWebstorageModule.forRoot(),
+    ReactiveFormsModule,
+    ToastrModule.forRoot()
   ],
   providers: [
   ],
