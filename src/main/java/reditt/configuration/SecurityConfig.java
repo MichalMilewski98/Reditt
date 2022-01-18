@@ -1,4 +1,4 @@
-package reditt.security;
+package reditt.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +12,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import reditt.security.JwtAuthenticationFilter;
+import reditt.security.JwtAuthorizationFilter;
 
 @EnableWebSecurity
 @Configuration

@@ -1,35 +1,16 @@
 package reditt.rest;
 
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 import reditt.dto.LoginRequest;
 import reditt.dto.RegisterRequest;
 import reditt.exception.RedittException;
-import reditt.model.Role;
-import reditt.model.User;
 import reditt.repository.UserRepository;
+import reditt.security.JwtProvider;
 import reditt.service.AuthService;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -37,10 +18,12 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
 
-    public AuthController(AuthService authService, UserRepository userRepository) {
+    public AuthController(AuthService authService, UserRepository userRepository, JwtProvider jwtProvider) {
         this.authService = authService;
         this.userRepository = userRepository;
+        this.jwtProvider = jwtProvider;
     }
 
     @PostMapping("/signup")
@@ -65,27 +48,16 @@ public class AuthController {
         return this.authService.login(loginRequest);
     }
 
-    @GetMapping("/token/refresh")
+   /* @GetMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             try {
                 String refreshToken = authorizationHeader.substring("Bearer ".length());
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(refreshToken);
-                String username = decodedJWT.getSubject();
+                String username = this.jwtProvider.getUsernameFromToken(authorizationHeader);
                 User user = userRepository.findByUsername(username);
+                String accessToken = this.jwtProvider.getAccessToken(user);
 
-                String accessToken = JWT.create()
-                        .withSubject(user.getUsername())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 600000))
-                        .withIssuer(request.getRequestURL().toString())
-                        .withClaim("roles", user.getRoles()
-                                .stream()
-                                .map(Role::getName)
-                                .collect(Collectors.toList()))
-                        .sign(algorithm);
                 Map<String, String> tokens = new HashMap<>();
                 tokens.put("access_token", accessToken);
                 tokens.put("refresh_token", refreshToken);
@@ -104,4 +76,6 @@ public class AuthController {
             throw new RuntimeException("Refresh token missing");
         }
     }
+
+    */
 }

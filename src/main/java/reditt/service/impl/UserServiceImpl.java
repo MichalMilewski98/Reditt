@@ -7,11 +7,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import reditt.dto.UserDto;
+import reditt.model.Role;
 import reditt.model.User;
 import reditt.query.service.UserQueryService;
 import reditt.repository.UserRepository;
 import reditt.service.UserService;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +46,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 
+    public void addUserRole(String username, String roleName) {
+        User user = this.userRepository.findByUsername(username);
+        Collection<Role> roles = user.getRoles();
+
+    }
 
     @Override
     public List<UserDto> getAllUsers() {
