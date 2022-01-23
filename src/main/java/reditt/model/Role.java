@@ -24,7 +24,9 @@ public class Role {
                     name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "privilege_id", referencedColumnName = "id"))
-    private Collection<Privilege> privileges;
+    private Collection<Permission> permissions;
+
+    public Role() { }
 
     public Role(String name) {
         this.name = name;
@@ -46,11 +48,11 @@ public class Role {
         this.users = users;
     }
 
-    public Collection<Privilege> getPrivileges() {
-        return this.privileges;
+    public Collection<Permission> getPermissions() {
+        return this.permissions;
     }
 
-    public void setPrivileges(Collection<Privilege> privileges) {
-        this.privileges = privileges;
+    public void setPermissions(Collection<Permission> permissions) {
+        this.permissions = permissions;
     }
 }

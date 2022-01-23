@@ -5,7 +5,7 @@ import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import javassist.NotFoundException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,10 +37,10 @@ public abstract class AbstractQueryService <T extends EntityPathBase<?>> {
         return !this.exists(query);
     }
 
-    protected <T2> T2 fetchOne(JPQLQuery<T2> query) throws NotFoundException {
+    protected <T2> T2 fetchOne(JPQLQuery<T2> query) throws ChangeSetPersister.NotFoundException {
         List<T2> results = query.fetch();
         if (results.isEmpty()) {
-            throw new NotFoundException("No results found");
+            throw new ChangeSetPersister.NotFoundException();
         }
 
         if (results.size() < 1) {

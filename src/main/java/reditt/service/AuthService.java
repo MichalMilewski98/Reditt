@@ -1,7 +1,8 @@
 package reditt.service;
 
-import org.springframework.security.core.Authentication;
+import reditt.dto.AuthenticationResponse;
 import reditt.dto.LoginRequest;
+import reditt.dto.RefreshTokenRequest;
 import reditt.dto.RegisterRequest;
 import reditt.exception.RedittException;
 
@@ -11,5 +12,7 @@ public interface AuthService {
 
     void verifyAccount(String token);
 
-    Authentication login(LoginRequest loginRequest) throws RedittException;
+    AuthenticationResponse login(LoginRequest loginRequest) throws RedittException;
+
+    AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
 }

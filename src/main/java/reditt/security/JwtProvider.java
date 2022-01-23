@@ -1,60 +1,45 @@
 package reditt.security;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Component;
-import reditt.model.Role;
-import reditt.model.User;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.Instant;
 
-@Component
+@Service
 public class JwtProvider {
 
-    private static final String ISSUER = "Reditt";
+    private final JwtEncoder jwtEncoder;
 
-    public JwtProvider() {
+    @Value("${jwt.expiration.time}")
+    private Long jwtExpirationInMillis;
 
+    public JwtProvider(JwtEncoder jwtEncoder) {
+        this.jwtEncoder = jwtEncoder;
     }
 
-    public String getUsernameFromToken(String authorizationHeader) {
-        String token = authorizationHeader.substring("Bearer ".length());
-        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-        JWTVerifier verifier = JWT.require(algorithm).build();
-        DecodedJWT decodedJWT = verifier.verify(token);
-        return decodedJWT.getSubject();
+    public String generateToken(Authentication authentication) {
+        User principal = (User) authentication.getPrincipal();
+        return generateTokenWithUserName(principal.getUsername());
     }
 
-  /*  public String getAccessToken(Object user) {
-        List<String> userRoles = new ArrayList<>();
-        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+    public String generateTokenWithUserName(String username) {
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusMillis(this.jwtExpirationInMillis))
+                .subject(username)
+                .claim("scope", "ROLE_USER")
+                .build();
 
-        return JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 600000))
-                .withIssuer(ISSUER)
-                .withClaim("roles", roles)
-                .sign(algorithm);
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
-   */
-
-
-    private List<String> getUserRoles(User user) {
-        return user.getRoles()
-                .stream()
-                .map(Role::getName)
-                .collect(Collectors.toList());
-    }
-
-    private List<String> getUserAuthorities(org.springframework.security.core.userdetails.User user) {
-        return user.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+    public Long getJwtExpirationInMillis() {
+        return this.jwtExpirationInMillis;
     }
 }

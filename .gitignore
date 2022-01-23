@@ -36,3 +36,5 @@ build/
 *.properties
 node_modules
 log4j2.xml
+*.key
+*.pub
