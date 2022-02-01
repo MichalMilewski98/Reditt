@@ -1,15 +1,9 @@
 <header>
-    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
-      <div class="flex-grow-1">
-        <a aria-label="Home" class="logo" routerLink="/">
-          <span class="reddit-text">
-            Spring Reddit Clone
-          </span>
-        </a>
-      </div>
-      <div class="flex-grow-1 float-right">
-        <a routerLink="/sign-up" class="float-right signup mr-2">Sign up</a>
-        <a routerLink="/login" class="float-right login mr-2">Login</a>
-      </div>
-    </nav>
-  </header>
+  <p-menubar class="ui-g-4 ui-md-6 ui-lg-8 ui-xl-12 reditt-menubar">
+    <ng-template pTemplate="start">
+      <span class="reddit-text"> Spring Reddit Clone </span>
+      <a routerLink="/sign-up" class="float-right pButton signup mr-2">Sign up</a>
+      <a routerLink="/login" class="float-right login mr-2">Login</a>
+    </ng-template>
+  </p-menubar>
+</header>

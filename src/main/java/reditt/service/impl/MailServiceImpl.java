@@ -1,5 +1,6 @@
 package reditt.service.impl;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,15 @@ import java.util.Properties;
 @Service
 public class MailServiceImpl {
 
+    @Value("${spring.mail.username}")
+    private String username;
+
+    @Value("${spring.mail.password}")
+    private String password;
+
     @Async
     public void sendMail(String token, String recipient) {
         String from = "reditt@email.com";
-        final String username = "0aa43d7d7fc71a";
-        final String password = "abf952c5156779";
         String host = "smtp.mailtrap.io";
 
         Properties props = new Properties();
@@ -28,12 +33,11 @@ public class MailServiceImpl {
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.port", "25");
 
-        Session session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
+        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
 
         try {
             Message message = new MimeMessage(session);

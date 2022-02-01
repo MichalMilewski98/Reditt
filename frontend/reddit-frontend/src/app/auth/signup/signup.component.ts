@@ -17,11 +17,7 @@ export class SignupComponent implements OnInit {
 
   constructor(private authService: AuthService, private router: Router,
     private toastr: ToastrService) {
-    this.signupRequest = {
-      username: '',
-      email: '',
-      password: ''
-    };
+
    }
 
   ngOnInit(): void {
@@ -33,9 +29,9 @@ export class SignupComponent implements OnInit {
   }
 
   signup() {
-    this.signupRequest.username = this.signupForm.get('username')?.value;
-    this.signupRequest.email = this.signupForm.get('email')?.value;
-    this.signupRequest.password = this.signupForm.get('password')?.value;
+    this.signupRequest.username = this.signupForm.get("username")?.value;
+    this.signupRequest.email = this.signupForm.get("email")?.value;
+    this.signupRequest.password = this.signupForm.get("password")?.value;
 
     this.authService.signup(this.signupRequest)
     .subscribe(data => {

@@ -9,14 +9,11 @@
                 <div class="card-body">
                     <form [formGroup]="signupForm" (ngSubmit)="signup()">
                         <div class="form-group row">
-                            <label for="email_address" class="col-md-4 col-form-label text-md-right">E-Mail
+                            <label for="email" class="col-md-4">E-Mail
                                 Address</label>
                             <div class="col-md-6">
-                                <input type="text" [formControlName]="'email'"id="email_address" class="form-control" name="email-address" required
-                                    autofocus>
-                                <span *ngIf="!signupForm.get('email')!.valid && signupForm.get('email')!.touched">
-                                   Please provide email
-                                </span>
+                                <input type="text" [formControlName]="email" id="email" class="form-control" required autofocus>
+                                <span class="text-danger" *ngIf="!['email'].valid">Email is required</span>
                             </div>
                         </div>
 
