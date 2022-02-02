@@ -69,6 +69,7 @@ public class AuthServiceImpl implements AuthService {
         org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
         return this.userRepository.findByUsername(principal.getUsername());
+        
     }
 
     private void fetchUserAndEnable(VerificationToken verificationToken) {
